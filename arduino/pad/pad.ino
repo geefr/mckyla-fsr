@@ -1,5 +1,11 @@
 /*For more information see www.ladyada.net/learn/sensors/fsr.html */
 
+#define ENABLE_EEPROM
+
+#ifdef ENABLE_EEPROM
+# include <EEPROM.h>
+#endif
+
 //Sides: left 0, right 1
 #define SIDE '0'
 
@@ -47,6 +53,50 @@ float releaseMultiplier = 0.9f;
 
 char LURD_Keys[4] = {1, 2, 3, 4};
 const unsigned int MAX_INPUT = 50;
+
+#ifdef ENABLE_EEPROM
+// If enabled make the contents of LURD_pressures persistent
+// Note that EEPROM can hande ~100k writes, so hopefully
+// that's enough given infrequent calibrations
+// If it wears out just increment this by sizeof(EEPromData) to shift along the block
+unsigned int EEPromAddress = 0x00;
+
+/// Data structure to write to eeprom
+struct EEPromData {
+  int LPressure = 0;
+  int UPressure = 0;
+  int RPressure = 0;
+  int DPressure = 0;
+};
+
+void saveCalibration() {
+  EEPromData data;
+  
+  data.LPressure = LURD_pressures[0];
+  data.UPressure = LURD_pressures[1];
+  data.RPressure = LURD_pressures[2];
+  data.DPressure = LURD_pressures[3];
+  
+  for( auto i = 0u; i < 4; ++i ) {
+    EEPROM.put(EEPromAddress, data);
+  }
+  
+  Serial.printf("Calibration Saved: %i, %i, %i, %i\n", LURD_pressures[0], LURD_pressures[1], LURD_pressures[2], LURD_pressures[3] ); 
+}
+
+void loadCalibration() {
+  EEPromData data;
+  EEPROM.get(EEPromAddress, data);
+  LURD_pressures[0] = data.LPressure;
+  LURD_pressures[1] = data.UPressure;
+  LURD_pressures[2] = data.RPressure;
+  LURD_pressures[3] = data.DPressure;
+  
+  Serial.printf("Calibration Loaded: %i, %i, %i, %i\n", LURD_pressures[0], LURD_pressures[1], LURD_pressures[2], LURD_pressures[3] );
+}
+
+#endif
+
 void setup(void) {
   Serial.begin(9600);
   setupLedOutputs();
@@ -74,7 +124,11 @@ void initDataForCalibration() {
 
 void calibrate() {
   initDataForCalibration();
+#ifdef ENABLE_EEPROM
+  loadCalibration();
+#else
   setCalibrationThresholds(startupCalibrationThreshold);
+#endif
   //printPressures();
 }
 
@@ -89,7 +143,6 @@ void setCalibrationThresholds(int threshold)
 // process data after null terminator is received
 void process_data (char * data)
 {
-
   //do some string parsing  
   data[4]=0;
   int index = data[0]-48;
@@ -112,10 +165,16 @@ void process_data (char * data)
 
       int threshold = atoi((const char *)&(data[1]));
       setCalibrationThresholds(threshold);
+#ifdef ENABLE_EEPROM
+      saveCalibration();
+#endif
     }
     else if (index < 5)
     {
       LURD_pressures[index] = atoi((const char *)&(data[1]));
+#ifdef ENABLE_EEPROM
+      saveCalibration();
+#endif
     }
 
     printPressures();
