@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import cgi
 import serial
@@ -29,20 +29,20 @@ s.close()
 form = cgi.FieldStorage()
 cur_user = form.getvalue("cur_user")
 
-print "Content-type: text/html"
-print
-print '''<html>'''
+print("Content-type: text/html")
+print()
+print('''<html>''')
 
-print '''<head>'''
-print '''<link rel="stylesheet" type="text/css" href="../styles/styles.css">'''
-print '''<script src="../js/jquery-3.2.1.min.js"></script>'''
-print '''<script src="../js/scripts.js"></script>'''
-print '''</head>'''
+print('''<head>''')
+print('''<link rel="stylesheet" type="text/css" href="../styles/styles.css">''')
+print('''<script src="../js/jquery-3.2.1.min.js"></script>''')
+print('''<script src="../js/scripts.js"></script>''')
+print('''</head>''')
 
-print '''<body>'''
-print '''<div class="button" style="padding: 10px; margin: 0 auto;margin-top: 25px;width: 300px;">'''
-print '''    <a href="vdcm-disable.py?cur_user=%s" style="text-decoration: none;">Stop pad vibration detection calibration</a>''' % cur_user
-print '''</div>'''
+print('''<body>''')
+print('''<div class="button" style="padding: 10px; margin: 0 auto;margin-top: 25px;width: 300px;">''')
+print('''    <a href="vdcm-disable.py?cur_user=%s" style="text-decoration: none;">Stop pad vibration detection calibration</a>''' % cur_user)
+print('''</div>''')
 
-print '''</body>'''
-print '''</html>'''
+print('''</body>''')
+print('''</html>''')

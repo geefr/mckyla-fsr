@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import cgi
 import serial
@@ -29,21 +29,21 @@ s.close()
 form = cgi.FieldStorage()
 cur_user = form.getvalue("cur_user")
 
-print "Content-type: text/html"
-print
-print '''<html>'''
+print("Content-type: text/html")
+print()
+print('''<html>''')
 
-print '''<head>'''
-print '''<link rel="stylesheet" type="text/css" href="../styles/styles.css">'''
-print '''<script src="../js/jquery-3.2.1.min.js"></script>'''
-print '''<script src="../js/scripts.js"></script>'''
-print '''</head>'''
+print('''<head>''')
+print('''<link rel="stylesheet" type="text/css" href="../styles/styles.css">''')
+print('''<script src="../js/jquery-3.2.1.min.js"></script>''')
+print('''<script src="../js/scripts.js"></script>''')
+print('''</head>''')
 
-print '''<body>'''
-print '''<br><a href=pads.py?cur_user=%s>Return to main page</a>''' % cur_user
+print('''<body>''')
+print('''<br><a href=pads.py?cur_user=%s>Return to main page</a>''' % cur_user)
 
-print '''<script>setTimeout(function() { window.location = "pads.py?cur_user=%s" }, 1000) </script>''' % cur_user
+print('''<script>setTimeout(function() { window.location = "pads.py?cur_user=%s" }, 1000) </script>''' % cur_user)
 
-print '''</body>'''
-print '''</html>'''
+print('''</body>''')
+print('''</html>''')
 
