@@ -14,10 +14,21 @@
 #define INITIAL_RIGHT_PRESSURE 1000
 #define INITIAL_UP_PRESSURE    1000
 
+// geefr's pad
+// analog
+// - 0 up
+// - 1 right
+// - 2 down
+// - 3 left
+// - 6 up led (todo)
+// - 7 right led (todo)
+// - 8 down led (todo)
+// - 9 left led (todo)
+
 // {1, 0, 2, 3} on FAT right side
 // {0, 2, 3, 1} all other pads (FAT, PRO, Tennari)
 int LED_pins[4] = {0, 2, 3, 1};
-int LURD_pins[4] = {0, 2, 3, 1};
+int LURD_pins[4] = {3, 0, 1, 2};
 int LURD_values[4] = {0, 0, 0, 0};
 int LURD_state[4] = {0, 0, 0, 0};
 int LURD_pressures[4] = {INITIAL_LEFT_PRESSURE, INITIAL_UP_PRESSURE, INITIAL_RIGHT_PRESSURE, INITIAL_DOWN_PRESSURE};
@@ -44,10 +55,12 @@ void setup(void) {
 
 void setupLedOutputs()
 {
+#ifdef ENABLE_LEDS  
   for (int i = 0; i < 4; i++)
   {
     pinMode(LED_pins[i], OUTPUT);
   }
+#endif
 }
 
 void initDataForCalibration() {
@@ -178,7 +191,9 @@ void updateAnalogValues() {
       if (LURD_state[i] == 0)
       {
         Joystick.button(LURD_Keys[i], 1);
+#ifdef ENABLE_LEDS
         digitalWrite(LED_pins[i], HIGH);
+#endif        
         LURD_state[i] = 1;
       }
     }
@@ -188,7 +203,9 @@ void updateAnalogValues() {
       if (LURD_state[i] == 1 && LURD_values[i] < borderValue * releaseMultiplier)
       {
         Joystick.button(LURD_Keys[i], 0);
+#ifdef ENABLE_LEDS
         digitalWrite(LED_pins[i], LOW);
+#endif
         LURD_state[i] = 0;
       }
     }
