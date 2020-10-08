@@ -6,6 +6,9 @@
 # include <EEPROM.h>
 #endif
 
+// Define to log fsr values to serial (slow)
+// #define DEBUG_FSR_VALUES
+
 //Sides: left 0, right 1
 #define SIDE '0'
 
@@ -81,7 +84,7 @@ void saveCalibration() {
     EEPROM.put(EEPromAddress, data);
   }
   
-  Serial.printf("Calibration Saved: %i, %i, %i, %i\n", LURD_pressures[0], LURD_pressures[1], LURD_pressures[2], LURD_pressures[3] ); 
+  // Serial.printf("Calibration Saved: %i, %i, %i, %i\n", LURD_pressures[0], LURD_pressures[1], LURD_pressures[2], LURD_pressures[3] ); 
 }
 
 void loadCalibration() {
@@ -92,7 +95,7 @@ void loadCalibration() {
   LURD_pressures[2] = data.RPressure;
   LURD_pressures[3] = data.DPressure;
   
-  Serial.printf("Calibration Loaded: %i, %i, %i, %i\n", LURD_pressures[0], LURD_pressures[1], LURD_pressures[2], LURD_pressures[3] );
+  // Serial.printf("Calibration Loaded: %i, %i, %i, %i\n", LURD_pressures[0], LURD_pressures[1], LURD_pressures[2], LURD_pressures[3] );
 }
 
 #endif
@@ -320,7 +323,8 @@ void loop(void) {
 
   updateAnalogValues();
 
- /* if(counter % 10 == 0) {
+#ifdef DEBUG_FSR_VALUES
+    if(counter % 10 == 0) {
     int fsrReading = analogRead(0);
     Serial.print(fsrReading);
     Serial.print(";");
@@ -335,5 +339,6 @@ void loop(void) {
     fsrReading = analogRead(3);
     Serial.print(fsrReading);
     Serial.println(";");
-  }*/
+  }
+#endif
 }
